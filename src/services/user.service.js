@@ -1,4 +1,4 @@
-const PersistenceFactory = require('../daos/PersistenceFactory');
+const PersistenceFactory = require('../daos/persistenceFactory');
 
 class UserService {
     constructor() {
