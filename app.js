@@ -76,7 +76,12 @@ app.use('*', function(req, res){
 });
 
 // Conexión al puerto
-const server = app.listen(config.PORT, () => {
-    logger.info(`Servidor escuchando en el puerto ${server.address().port}`);
-});
-server.on('error', error => logger.info(`Error en el servidor: ${error}`));
+// const server = app.listen(config.PORT, () => {
+//     logger.info(`Servidor escuchando en el puerto ${server.address().port}`);
+// });
+// server.on('error', error => logger.info(`Error en el servidor: ${error}`));
+
+const server = app.listen(process.env.PORT || 5000, () => {
+    const port = server.address().port;
+    console.log(`Express is working on port ${port}`);
+  });
