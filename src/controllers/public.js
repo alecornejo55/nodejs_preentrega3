@@ -1,5 +1,8 @@
 const ProductService = require('../services/product.service');
+const CartService = require('../services/cart.service');
 const product = new ProductService();
+const cart = new CartService();
+const hbsHelpers = require('../utils/hbs.util');
 
 const login = (req, res) => {
     res.render('login', { title: 'Iniciar sesión' });
@@ -54,11 +57,20 @@ const productDetail = async (req, res) => {
     const user = getUser(req.user);
     res.render('productDetail', { title: 'Detalle del producto', user, product: productFound });
 }
-const cart = async (req, res) => {
+const cartInfo = async (req, res) => {
+    const logger = req.app.get('logger');
     const user = getUser(req.user);
-    res.render('cart', { title: 'Carrito de compras', user});
+    const myCart = await cart.getById(user.cart);
+    // logger.info(myCart.products);
+    // logger.info(myCart);
+    res.render('cart', {
+        title: 'Carrito de compras', 
+        user, 
+        cart: myCart,
+        helpers: hbsHelpers
+    });
 }
 
 module.exports = {
-    login, signup, index, dashboard, logout, products, productDetail, cart
+    login, signup, index, dashboard, logout, products, productDetail, cartInfo
 }

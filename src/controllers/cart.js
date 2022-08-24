@@ -50,11 +50,13 @@ const addProductCart = async (req, res) => {
     const { products } = req.body;
     try {
         const cartFound = await cart.getById(idCart);
-        // console.log("Init",products);
         if(cartFound === null) {
             throw new Error('carrito no encontrado');
         }
-        await cart.addProduct(idCart, products);
+        const data = await cart.addProduct(idCart, products);
+        if(data.success === false) {
+            throw new Error(data.error);
+        }
         res.send({
             success: true,
             message: "Productos agregados"
@@ -76,11 +78,46 @@ const deleteProductCart = async (req, res) => {
             throw new Error('carrito no encontrado');
         }
 
-        await cart.deleteProduct(idCart, idProd);
-
-        res.send({message: "Producto actualizado"});
+        // await cart.deleteProduct(idCart, idProd);
+        const data = await cart.deleteProduct(idCart, idProd);
+        if(data.success === false) {
+            throw new Error(data.error);
+        }
+        res.send({
+            success: true,
+            message: "Producto eliminado"
+        });
     } catch (error) {
-        res.send({error: error.message})
+        res.send({
+            success: false,
+            error: error.message
+        })
+    }
+}
+
+const deleteOneProductCart = async (req, res) => {
+    const idCart = req.params.id;
+    const idProd = req.params.idProd;
+    try {
+        const cartFound = await cart.getById(idCart);
+        if(cartFound === null) {
+            throw new Error('carrito no encontrado');
+        }
+
+        // await cart.deleteProduct(idCart, idProd);
+        const data = await cart.deleteProductOne(idCart, idProd);
+        if(data.success === false) {
+            throw new Error(data.error);
+        }
+        res.send({
+            success: true,
+            message: "Producto eliminado"
+        });
+    } catch (error) {
+        res.send({
+            success: false,
+            error: error.message
+        })
     }
 }
 const getCantProductsCart = async (req, res) => {
@@ -105,5 +142,5 @@ const getCantProductsCart = async (req, res) => {
 
 module.exports = {
     createCart, deleteCart, getCart, getProductsCart, addProductCart,
-    deleteProductCart, getCantProductsCart
+    deleteProductCart, getCantProductsCart, deleteOneProductCart
 }

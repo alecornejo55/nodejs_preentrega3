@@ -25,7 +25,8 @@ class CartService {
         return await this.cartDao.deleteById(id);
     }
     addProduct = async (idCarrito, productos) => {
-        return await this.cartDao.addProduct(idCarrito, productos);
+        const data = await this.cartDao.addProduct(idCarrito, productos);
+        return data;
     }
     deleteProduct = async (idCarrito, idProd) => {
         return await this.cartDao.deleteProduct(idCarrito, idProd);

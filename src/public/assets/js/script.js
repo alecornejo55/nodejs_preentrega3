@@ -318,8 +318,13 @@ document.addEventListener("readystatechange", (event) => {
         loaderEl.classList.add("fullpage-loader--invisible");
 
         setTimeout(() => {
-            loaderEl.parentNode.removeChild(loaderEl);
-        }, 2000);
+            loaderEl.classList.add("d-none");
+            // loaderEl.parentNode.removeChild(loaderEl);
+        }, 1000);
+
+        // setTimeout(() => {
+        //     loaderEl.parentNode.removeChild(loaderEl);
+        // }, 2000);
     }
 });
 

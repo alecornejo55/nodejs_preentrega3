@@ -18,6 +18,6 @@ router.get('/productos', checkLogout, checkAdmin, public.products);
 
 router.get('/productos/detalle/:id', checkLogout, checkAdmin, public.productDetail);
 
-router.get('/carrito', checkLogout, public.cart);
+router.get('/carrito', checkLogout, public.cartInfo);
 
 module.exports = router;

@@ -53,18 +53,9 @@
 <!-- mobile fix menu end -->
 
 <!-- Breadcrumb Section Start -->
-<section class="breadscrumb-section pt-0">
-    <div class="container-fluid-lg">
-        <div class="row">
-            <div class="col-12">
-                <div class="breadscrumb-contain">
-                    <h2>Productos</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{{> breadcrumb }}
 <!-- Breadcrumb Section End -->
+
 <input type="hidden" name="userCart" id="userCart" value="{{ user.cart.id }}">
 <!-- Cart Section Start -->
 <section class="cart-section section-b-space">

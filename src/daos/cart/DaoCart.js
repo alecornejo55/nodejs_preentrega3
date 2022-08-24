@@ -26,16 +26,23 @@ class DaoCart extends Container {
                 const addProduct = await product.getById(p.id);
                 if(addProduct !== null) {
                     const checkProduct = cartFound.products.filter(prod => prod._id == p.id);
+
                     if(checkProduct.length == 0) {
                         addProduct.stock = 1;
                         cartFound.products.push(addProduct);
                     }
                     else {
+                        if(checkProduct[0].stock >= addProduct.stock) {
+                            throw new Error('Producto sin stock');
+                        }
                         checkProduct[0].stock++;
                     }
                 }
             }
             await this.updateById(idCart, cartFound);
+            return {
+                success: true,
+            };
         }
         catch(error) {
             return {
@@ -53,6 +60,9 @@ class DaoCart extends Container {
             const productFound = cartFound.products.filter(prod => prod._id != idProd);
             cartFound.products = productFound;
             await this.updateById(idCart, cartFound);
+            return {
+                success: true,
+            };
         }
         catch(error) {
             return {
@@ -90,6 +100,9 @@ class DaoCart extends Container {
                 }
             }
             await this.updateById(idCart, cartFound);
+            return {
+                success: true,
+            };
         }
         catch(error) {
             return {
