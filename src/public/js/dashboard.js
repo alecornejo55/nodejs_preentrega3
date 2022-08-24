@@ -1,8 +1,7 @@
 const divProducts = document.querySelector("#products");
-const userCart = document.getElementById('userCart');
-
+// const userCart = document.getElementById('userCart');
 divProducts.addEventListener("click", async (event) => {
-    if (event.target.classList.contains("addCart")) {
+    if (event.target.classList.contains("addcart_button")) {
         const id = event.target.dataset.id;
         // alert("added to cart: "+id);
         const options = {
@@ -24,6 +23,7 @@ divProducts.addEventListener("click", async (event) => {
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
+            getCantProductsCart(userCart.value);
         } else {
             swal.fire({
                 title: 'Error',
@@ -32,6 +32,6 @@ divProducts.addEventListener("click", async (event) => {
                 confirmButtonText: 'OK'
             });
         }
-        console.log(data);
+        // console.log(data);
     }
 });

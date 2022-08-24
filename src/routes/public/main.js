@@ -16,4 +16,8 @@ router.get('/logout', checkLogout, public.logout);
 
 router.get('/productos', checkLogout, checkAdmin, public.products);
 
+router.get('/productos/detalle/:id', checkLogout, checkAdmin, public.productDetail);
+
+router.get('/carrito', checkLogout, public.cart);
+
 module.exports = router;

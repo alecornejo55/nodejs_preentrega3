@@ -30,6 +30,9 @@ class CartService {
     deleteProduct = async (idCarrito, idProd) => {
         return await this.cartDao.deleteProduct(idCarrito, idProd);
     }
+    deleteProductOne = async (idCarrito, idProd) => {
+        return await this.cartDao.deleteProductOne(idCarrito, idProd);
+    }
     getUserCart = async (id) => {
         return await this.cartDao.getUserCart(id);
     }

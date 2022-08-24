@@ -1,74 +1,29 @@
 const form = document.querySelector('#productForm');
-Handlebars.registerHelper("formatDate", function (datetime, format) {
-    return new Date(datetime).toLocaleString("es-AR");
-});
-const renderProducts = async (data) => {
-    const template = await fetch('/templates/products.hbs');
+const tableProducts = document.querySelector('#tableProducts tbody');
+const btnCancel = document.querySelector('#btn-cancel');
+
+// Funciones
+const cancelForm = () => {
+    form.reset();
+    document.querySelector('#formTitle').innerHTML = 'Ingrese un producto';
+    form.querySelector('#btn-save').innerText = 'Agregar producto';
+    form.querySelector('#btn-cancel').classList.add('d-none');
+}
+
+const renderProduct = async (data, edited = false) => {
+    const template = await fetch('/templates/product.hbs');
     const textTemplate = await template.text();
-	const functionTemplate = Handlebars.compile(textTemplate);
-	const html = functionTemplate({ products: data });
-	document.querySelector('#products').innerHTML = html;
-    const btnDelete = document.querySelectorAll('.btn-delete');
-    btnDelete.forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const id = btn.dataset.id;
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡No podrás revertir esto!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirmar',
-                cancelButtonText: 'Cancelar'
-            }).then(async (result) => {
-                if (result.value) {
-                    // console.log("btnDelete", id, "Fin btnDelete");
-                    const product = await fetch(`/api/product/${id}`, {
-                        method: 'DELETE'
-                    });
-                    const data = await product.json();
-                    
-                    if(data.deleted) {
-                        Swal.fire(
-                            'Producto eliminado',
-                            `El producto ha sido eliminado con éxito`,
-                            'success'
-                        );
-                        getProducts();
-                    }
-                    else {
-                        Swal.fire(
-                            'Ha ocurrido un error',
-                            `El producto no ha sido eliminado: ${data.message}`,
-                            'error'
-                        );
-                    }
-                }
-            })
-        });
-    });
-}
-const renderProduct = async (data) => {
-    const tproducts = document.querySelector('#tproducts');
-    if(!tproducts){
-        getProducts();
+    const functionTemplate = Handlebars.compile(textTemplate);
+    const html = functionTemplate(data);
+    if(edited) {
+        document.querySelector(`[data-tr-id="${data.id}"]`).innerHTML = html;
     }
-    const html = `
-    <tr>
-        <td>${data.name}</td>
-        <td>${data.description}</td>
-        <td>${data.code}</td>
-        <td>${data.price}</td>
-        <td>${data.stock}</td>
-        <td><img src="${data.image}" alt="${data.name}" style="max-height: 30px; vertical-align:middle;"></td>
-    </tr>`
-    tproducts.innerHTML += html;
+    else {
+        tableProducts.innerHTML += html;
+    }
 }
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(form);
+
+const saveNew = async (formData) => {
     const newProducto = {
         name: formData.get('name'),
         description: formData.get('description'),
@@ -87,15 +42,15 @@ form.addEventListener('submit', async (e) => {
             },
             body: JSON.stringify(newProducto)
         });
-        // const data = await product.json();
-        // renderProduct(newProducto);
-        // socket.emit('new-product', newProducto);
+        const data = await product.json();
+        // console.log(data);
         Swal.fire(
             'Producto guardado',
             `El producto ha sido agregado con éxito`,
             'success'
         );
-        getProducts();
+        newProducto.id = data.data.id;
+        renderProduct(newProducto);
         form.reset();
     }
     catch (error) {
@@ -106,22 +61,121 @@ form.addEventListener('submit', async (e) => {
         );
         console.warn(error);
     }
-});
-const getProducts = async () => {
-    const divProducts = document.querySelector('#products');
-    const htmlLoading = `
-        <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-        <p class="mt-3 text-center text-primary">Cargando productos...</p>
-        `;
-    divProducts.className = 'd-flex justify-content-center mt-5 row';
-    divProducts.innerHTML = htmlLoading;
-    const products = await fetch('/api/product');
-    const data = await products.json();
-    await renderProducts(data);
-    divProducts.className = 'row';
+}
+const saveEdited = async(formData) => {
+    const id = formData.get('id');
+    const newProducto = {
+        name: formData.get('name'),
+        description: formData.get('description'),
+        code: formData.get('code'),
+        price: formData.get('price'),
+        stock: formData.get('stock'),
+        image: formData.get('image')
+    };
+    try {
+        const product = await fetch(`/api/product/${id}`, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newProducto)
+        });
+        const data = await product.json();
+        // console.log(data);
+        Swal.fire(
+            'Producto guardado',
+            `El producto ha sido modificado con éxito`,
+            'success'
+        );
+        newProducto.id = data.data.id;
+        renderProduct(newProducto, true);
+        form.reset();
+    }
+    catch (error) {
+        Swal.fire(
+            'Ha ocurrido un error',
+            `El producto no ha sido modificado: ${error.message}`,
+            'error'
+        );
+        console.warn(error);
+    }
 }
 
-// iniciamos productos
-getProducts();
+// acciones de los botones de la tabla
+tableProducts.addEventListener('click', async (e) => {
+    const btnEdit = e.target.closest('.btn-edit');
+    const btnDelete = e.target.closest('.btn-delete');
+    if(btnEdit) {
+        const id = btnEdit.dataset.id;
+        const product = await fetch(`/api/product/${id}`);
+        const data = await product.json();
+        // console.log(data);
+        // const form = document.querySelector('#productForm');
+        form.querySelector('#id').value = data.id;
+        form.querySelector('#name').value = data.name;
+        form.querySelector('#description').value = data.description;
+        form.querySelector('#price').value = data.price;
+        form.querySelector('#stock').value = data.stock;
+        form.querySelector('#code').value = data.code;
+        form.querySelector('#image').value = data.image;
+        document.querySelector('#formTitle').innerHTML = 'Editar producto';
+        form.querySelector('#btn-save').innerText = 'Editar';
+        form.querySelector('#btn-cancel').classList.remove('d-none');
+    }
+    if(btnDelete) {
+        const id = btnDelete.dataset.id;
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.value) {
+                const product = await fetch(`/api/product/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await product.json();
+
+                if(data.deleted) {
+                    Swal.fire(
+                        'Producto eliminado',
+                        `El producto ha sido eliminado con éxito`,
+                        'success'
+                    );
+                    const trDeleted = document.querySelector(`[data-tr-id="${id}"]`);
+                    trDeleted.remove();
+                }
+                else {
+                    Swal.fire(
+                        'Ha ocurrido un error',
+                        `El producto no ha sido eliminado: ${data.message}`,
+                        'error'
+                    );
+                }
+            }
+        })
+    }
+});
+
+// Eventos
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const id = formData.get('id');
+    if(id == ''){
+        saveNew(formData);
+    }
+    else {
+        saveEdited(formData);
+    }
+});
+
+btnCancel.addEventListener('click', (e) => {
+    e.preventDefault();
+    cancelForm();
+})

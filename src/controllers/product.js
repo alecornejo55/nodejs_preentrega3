@@ -23,17 +23,39 @@ const getProduct = async (req, res) => {
 
 const saveProduct = async (req, res) => {
     // console.log(req.body);
-    const idProduct = await product.save(req.body);
-    res.status(200).json({id: idProduct});
+    try {
+        const newProduct = await product.save(req.body);
+        res.status(200).json({
+            success: true,
+            data: newProduct
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
 }
 
 const updateProduct = async (req, res) => {
     const id = req.params.id;
     const data = req.body;
     // console.log(data);
-    const resProduct = await product.updateById(id, data);
+    try {
 
-    res.send("Producto actualizado: " + JSON.stringify(resProduct));
+        const resProduct = await product.updateById(id, data);
+
+        res.send({
+            success: true,
+            data: resProduct
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+
 }
 
 const deleteProduct = async (req, res) => {

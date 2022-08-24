@@ -83,8 +83,27 @@ const deleteProductCart = async (req, res) => {
         res.send({error: error.message})
     }
 }
+const getCantProductsCart = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const cartFound = await cart.getById(id);
+        if(cartFound === null) {
+            throw new Error('carrito no encontrado');
+        }
+        // console.log("carrito", cartFound);
+        res.send({
+            success: true,
+            cant: cartFound.products.length
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
 
 module.exports = {
     createCart, deleteCart, getCart, getProductsCart, addProductCart,
-    deleteProductCart
+    deleteProductCart, getCantProductsCart
 }

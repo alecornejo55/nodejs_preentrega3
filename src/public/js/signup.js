@@ -4,10 +4,18 @@ const cleave = new Cleave('.input-element', {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    const formSignUp = document.getElementById("formSignUp");
+    const formSignup = document.getElementById("formSignUp");
+    const btnSingup = document.getElementById("btnSingup");
     
-    formSignUp.addEventListener('submit', async (e) => {
+    formSignup.addEventListener('submit', async (e) => {
         e.preventDefault();
+        btnSingup.disabled = true;
+        const htmlBtnLoading = `
+        <span class="mr-1">Registrando&nbsp;</span>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        `;
+        btnSingup.innerHTML = htmlBtnLoading;
+
         const form = new FormData(e.target);
         const response = await fetch(`/api/user/signUp`, {
           method: "POST",
@@ -18,9 +26,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if(result.status === 'error') {
             divError.innerHTML = "";
             result.message.forEach(element => {
-                divError.innerHTML += `<p class="m-0">${element}</p>`;                
+                divError.innerHTML += `<p class="m-0">${element}</p>`;
             });
-            divError.className = "alert alert-danger py-2";
+            divError.className = "alert alert-danger py-3";
+            btnSingup.innerHTML = "Registrarse";
+            btnSingup.disabled = false;
+            // scroll to top
+            window.scrollTo(0, 0);
+            setTimeout(() => {
+                divError.innerHTML = "";
+                divError.className = "";
+            }, 4000);
         }
         else {
             divError.innerHTML = "";

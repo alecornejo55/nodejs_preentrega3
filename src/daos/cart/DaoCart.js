@@ -76,6 +76,28 @@ class DaoCart extends Container {
             };
         }
     }
+    async deleteProductOne(idCart, idProd) {
+        try {
+            const cartFound = await this.getById(idCart);
+            if(cartFound === null) {
+                throw new Error('carrito no encontrado');
+            }
+            const productIndex = cartFound.products.findIndex(prod => prod._id == idProd);
+            if(productIndex > -1) {
+                cartFound.products[productIndex].stock--;
+                if(cartFound.products[productIndex].stock == 0) {
+                    cartFound.products.splice(productIndex, 1);
+                }
+            }
+            await this.updateById(idCart, cartFound);
+        }
+        catch(error) {
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
 }
 
 module.exports = { DaoCart };

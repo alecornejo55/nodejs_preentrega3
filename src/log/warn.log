@@ -7,3 +7,5 @@
 {"level":"warn","message":"Error al obtener: product validation failed: stock: Path `stock` is required., price: Path `price` is required., image: Path `image` is required., code: Path `code` is required., description: Path `description` is required., name: Path `name` is required."}
 {"level":"warn","message":"Error al obtener: product validation failed: stock: Path `stock` is required., price: Path `price` is required., image: Path `image` is required., code: Path `code` is required., description: Path `description` is required., name: Path `name` is required."}
 {"level":"warn","message":"Error al obtener: Cast to ObjectId failed for value \"[object HTMLInputElement]\" (type string) at path \"_id\" for model \"cart\""}
+{"level":"warn","message":"Error al actualizar: Cast to ObjectId failed for value \"[object HTMLInputElement]\" (type string) at path \"_id\" for model \"product\""}
+{"level":"warn","message":"Error al actualizar: Cast to ObjectId failed for value \"[object HTMLInputElement]\" (type string) at path \"_id\" for model \"product\""}

@@ -41,7 +41,8 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         maxAge: 1000 * 60 * 20, // 1 segundo * 60 = 1 minuto
-    }
+    },
+    rolling: true,
 }));
 
 // Passport config

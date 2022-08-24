@@ -1,13 +1,13 @@
 const nodemailer  = require('nodemailer');
+const global = require('./globals');
 
 const config = nodemailer.createTransport({
-    // host: 'smtp.ethereal.email',
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 587,
+    service: global.nodemailer.service,
+    host: global.nodemailer.host,
+    port: global.nodemailer.port,
     auth: {
-        user: 'alex.nodemailer.cornejo@gmail.com',
-        pass: 'bvzehkrhbnhaqghs'
+        user: global.nodemailer.auth.user,
+        pass: global.nodemailer.auth.pass
     }
 });
 module.exports = config;

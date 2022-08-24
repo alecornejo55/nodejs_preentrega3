@@ -50,6 +50,7 @@ const initializePassport = () => {
             {passReqToCallback: true},
             async(req, username, password, done) => {
                 try {
+                    if(!username || !password) return done(null, false, req.flash('loginMessage', 'Ingrese usuario y contraseña'));
                     let user = await User.findOne({username: username});
                     
                     if(!user) return done(null, false, req.flash('loginMessage', 'Usuario / contraseña incorrectos'));
