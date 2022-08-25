@@ -71,6 +71,20 @@ const cartInfo = async (req, res) => {
     });
 }
 
+const orderSuccess = async (req, res) => {
+    const logger = req.app.get('logger');
+    const user = getUser(req.user);
+    const myCart = await cart.getById(user.cart);
+    // logger.info(myCart.products);
+    // logger.info(myCart);
+    res.render('orderSuccess', {
+        title: '¡Compra éxitosa!', 
+        user, 
+        cart: myCart,
+        helpers: hbsHelpers
+    });
+}
+
 module.exports = {
-    login, signup, index, dashboard, logout, products, productDetail, cartInfo
+    login, signup, index, dashboard, logout, products, productDetail, cartInfo, orderSuccess,
 }

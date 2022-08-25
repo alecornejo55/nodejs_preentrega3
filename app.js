@@ -22,7 +22,8 @@ const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 
-global.ADMIN = true;
+const {  checkLogout } = require('./src/middlewares/auth');
+
 const { productRouterApi, cartRouterApi, publicRouter, userRouter } = require('./src/routes');
 
 app.use(express.json());
@@ -55,14 +56,13 @@ app.use(flash());
 app.engine('handlebars', engine({
     handlebars: allowInsecurePrototypeAccess(Handlebars)
 }));
-// app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 
 app.set('views', './src/views');
 app.use(express.static(__dirname + "/src/public"));
 
 app.use('/api/product', productRouterApi);
-app.use('/api/cart', cartRouterApi);
+app.use('/api/cart', checkLogout, cartRouterApi);
 app.use('/api/user', userRouter);
 app.use('/', publicRouter);
 

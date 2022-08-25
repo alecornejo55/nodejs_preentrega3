@@ -65,9 +65,16 @@ class Container {
     async deleteById(id){
         try {
             const rowDelete = await this.model.findOneAndDelete({_id: id});
+            return {
+                success: true
+            }
         }
         catch (error) {
             logger.warn(`Error al eliminar: ${error.message}`);
+            return {
+                success: false,
+                message: error.message
+            }
         }
     }
 }
