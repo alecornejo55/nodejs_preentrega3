@@ -48,6 +48,7 @@ const failedLogin = (req, res) => {
 }
 
 const createUser = async (req, res) => {
+    const cartCreated = await cart.save({user: req.user.id});
     res.status(200).json({
         status: 'success',
         message: "ok",
