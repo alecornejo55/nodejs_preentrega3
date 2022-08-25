@@ -29,7 +29,7 @@
                                             </li>
                                             {{#if user.admin}}
                                             <li class="nav-item">
-                                                <a class="nav-link nav-link-2" href="/productos">Productos (ABM)</a>
+                                                <a class="nav-link nav-link-2" href="/productos">Productos</a>
                                             </li>
                                             {{/if}}
                                         </ul>
@@ -94,3 +94,31 @@
     </div>
     <input type="hidden" name="userCart" id="userCart" value="{{ user.cart.id }}">
 </header>
+
+<!-- mobile fix menu start -->
+<div class="mobile-menu d-md-none d-block mobile-cart">
+    <ul>
+        <li class="active">
+            <a href="#">
+                <i class="iconly-Home icli"></i>
+                <span>Inicio</span>
+            </a>
+        </li>
+        {{#if user.admin}}
+        <li class="mobile-category">
+            <a href="/productos">
+                <i class="iconly-Category icli js-link"></i>
+                <span>Productos</span>
+            </a>
+        </li>
+        {{/if}}
+
+        <li>
+            <a href="/carrito">
+                <i class="iconly-Bag-2 icli fly-cate"></i>
+                <span>Carrito</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!-- mobile fix menu end -->
